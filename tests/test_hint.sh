@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # An outer tmux server runs a real client of an inner server that loads a copy of the plugin whose hint.sh counts its runs.
 s=twk-test-$$ d=$(mktemp -d) fail=0
-trap 'tmux -L $s-out kill-server; tmux -L $s kill-server; rm -rf "$d"' EXIT
+trap 'p=$(tmux -L $s display -p "#{socket_path}"); tmux -L $s-out kill-server; tmux -L $s kill-server; rm -rf "$d" "$p" "$p-out"' EXIT
 cd "$(dirname "$0")/.." && cp -R twhich-key.tmux scripts "$d" && mv "$d/scripts/hint.sh" "$d/scripts/real.sh"
 printf '#!/bin/sh\necho >> %s/runs; exec %s/scripts/real.sh "$@"\n' "$d" "$d" > "$d/scripts/hint.sh" && chmod +x "$d/scripts/hint.sh"
 echo "run-shell $d/twhich-key.tmux" > "$d/conf"
