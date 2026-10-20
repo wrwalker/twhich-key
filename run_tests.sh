@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Runs every tests/test_*.sh; exits non-zero if any fail.
+# Runs every tests/test_*.sh and exits non-zero if any of them fail.
+
 cd "$(dirname "$0")" || exit 1
-rc=0
-for t in tests/test_*.sh; do echo "# $t"; bash "$t" || rc=1; done
-exit $rc
+
+status=0
+for test in tests/test_*.sh; do
+  echo "# $test"
+  bash "$test" || status=1
+done
+exit $status
